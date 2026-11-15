@@ -1,98 +1,82 @@
 ---
 title: "A Second demo of corr with python + quarto"
-
 date: "today"
 author:
   - name: falak
     id: jc
     orcid: 0000-0002-1825-0097
     email: falak@wisc.edu
-    affiliation: 
+    affiliation:
       - name: University of Wisconsin Madison
         city: Madison
         state: WI
         url: www.uwmadison.edu
 
-execute: 
+execute:
   echo: true
 
-bibliography: references.bib
 ---
 
-
-
 # Introduction
-Using the diamond dataset. 
+
+Using the diamonds dataset from seaborn.
 
 ```{python}
 import pandas as pd
 import numpy as np
-
 import seaborn as sns
 import matplotlib.pyplot as plt
 
 df = sns.load_dataset('diamonds')
-
 ```
 
- Using the iris dataset from seaborn. We have data from 
- `{python} f"{df.shape[0]}"` diamonds.
- Our research question is to study whether there is a correlation relationship between clarity and color. 
+We have data from `{python} f"{df.shape[0]:,}"` diamonds.
+Our research question is whether there is a correlation between clarity and color.
 
 ```{python}
-display(df.head(10))
-``` 
+df.head(10)
+```
 
 # Literature Review
 
 A diamond's value is usually described by the "4 Cs" (carat, cut, color, and clarity), and regression models of diamond prices show that each color and clarity grade carries its own price premium [@chu2001].
 The diamonds dataset used here, originally distributed with the ggplot2 package, records these grades for 53,940 round-cut diamonds [@wickham2016].
-Because color (J to D) and clarity (I1 to IF) are ordered categories rather than true measurements, a rank-based statistic such as Spearman's ρ is more appropriate than Pearson's *r* for testing whether they move together [@spearman1904].
-
+Because color and clarity are ordered grades, they can be converted to numeric codes and compared using a correlation coefficient [@spearman1904].
 
 # Method
-```{python}
 
+Color (D = 0 to J = 6) and clarity (IF = 0 to I1 = 7) were converted to numbers, where lower means better for both.
+The correlation *r* between them was then computed with pandas.
+
+```{python}
+df['color_code'] = df['color'].cat.codes
+df['clarity_code'] = df['clarity'].cat.codes
+
+r = df['color_code'].corr(df['clarity_code'])
+print(f"r = {r:.3f}")
 ```
 
-# Results  
+# Results
+
 ```{python}
+counts = pd.crosstab(df['color'], df['clarity'])
+
+fig, ax = plt.subplots(figsize=(7, 4))
+sns.heatmap(counts, annot=True, fmt='d', cmap='Blues', ax=ax)
+ax.set_title('Number of diamonds by color and clarity')
+plt.show()
+
+
 fig, ax = plt.subplots(figsize=(6, 3.5))
 
 sns.scatterplot(data=df, y='clarity', x='depth')
 ```
 
-
 # Discussion
 
-Color and clarity were essentially unrelated (Spearman's ρ = `{python} f"{rho:.2f}"`), so knowing a diamond's color grade tells us almost nothing about its clarity grade.
-Although this result was statistically significant (*p* < .001), that is mainly a product of the very large sample, which is a reminder that statistical significance is not the same as practical importance.
-Both grades were lower in heavier stones (ρ = `{python} f"{rho_cl_carat:.2f}"` for clarity and `{python} f"{rho_co_carat:.2f}"` for color), so future analyses should control for carat, since size may explain the small link between the two grades.
+The correlation between color and clarity was r = `{python} f"{r:.3f}"`, which is essentially zero.
+This means a diamond's color tells us almost nothing about its clarity.
+This makes sense because color and clarity come from different causes: color mostly comes from trace elements in the crystal, while clarity depends on internal flaws.
+One limitation is that turning grades into numbers assumes equal steps between grades.
+Overall, color and clarity appear to be separate qualities of a diamond.
 
-# Reference 
-@article{chu2001,
-  author  = {Chu, Singfat},
-  title   = {Pricing the C's of Diamond Stones},
-  journal = {Journal of Statistics Education},
-  volume  = {9},
-  number  = {2},
-  year    = {2001}
-}
-
-@book{wickham2016,
-  author    = {Wickham, Hadley},
-  title     = {ggplot2: Elegant Graphics for Data Analysis},
-  edition   = {2},
-  publisher = {Springer},
-  year      = {2016}
-}
-
-@article{spearman1904,
-  author  = {Spearman, Charles},
-  title   = {The Proof and Measurement of Association between Two Things},
-  journal = {The American Journal of Psychology},
-  volume  = {15},
-  number  = {1},
-  pages   = {72--101},
-  year    = {1904}
-}
