@@ -1,0 +1,61 @@
+---
+title: "A Second demo of corr with python + quarto"
+
+date: "today"
+author:
+  - name: falak
+    id: jc
+    orcid: 0000-0002-1825-0097
+    email: falak@wisc.edu
+    affiliation: 
+      - name: University of Wisconsin Madison
+        city: Madison
+        state: WI
+        url: www.uwmadison.edu
+
+execute: 
+  echo: true
+---
+
+
+
+# Introductionrevie
+```{python}
+import pandas as pd
+import numpy as np
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+df = sns.load_dataset('diamonds')
+
+```
+
+ Using the iris dataset from seaborn. We have data from 
+ `{python} f"{df.shape[0]}"` diamonds.
+ Our research question is to study whether there is a correlation relationship between clarity and color. 
+
+```{python}
+display(df.head(10))
+``` 
+
+# Literature Review
+
+llalalalalal
+
+# Method
+```{python}
+
+```
+
+# Results  
+```{python}
+fig, ax = plt.subplots(figsize=(6, 3.5))
+
+sns.scatterplot(data=df, y='clarity', x='depth')
+```
+
+
+# Discussion
+
+lalalalla
