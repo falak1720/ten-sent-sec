@@ -15,11 +15,15 @@ author:
 
 execute: 
   echo: true
+
+bibliography: references.bib
 ---
 
 
 
-# Introductionrevie
+# Introduction
+Using the diamond dataset. 
+
 ```{python}
 import pandas as pd
 import numpy as np
@@ -41,7 +45,10 @@ display(df.head(10))
 
 # Literature Review
 
-llalalalalal
+A diamond's value is usually described by the "4 Cs" (carat, cut, color, and clarity), and regression models of diamond prices show that each color and clarity grade carries its own price premium [@chu2001].
+The diamonds dataset used here, originally distributed with the ggplot2 package, records these grades for 53,940 round-cut diamonds [@wickham2016].
+Because color (J to D) and clarity (I1 to IF) are ordered categories rather than true measurements, a rank-based statistic such as Spearman's ρ is more appropriate than Pearson's *r* for testing whether they move together [@spearman1904].
+
 
 # Method
 ```{python}
@@ -58,4 +65,34 @@ sns.scatterplot(data=df, y='clarity', x='depth')
 
 # Discussion
 
-lalalalla
+Color and clarity were essentially unrelated (Spearman's ρ = `{python} f"{rho:.2f}"`), so knowing a diamond's color grade tells us almost nothing about its clarity grade.
+Although this result was statistically significant (*p* < .001), that is mainly a product of the very large sample, which is a reminder that statistical significance is not the same as practical importance.
+Both grades were lower in heavier stones (ρ = `{python} f"{rho_cl_carat:.2f}"` for clarity and `{python} f"{rho_co_carat:.2f}"` for color), so future analyses should control for carat, since size may explain the small link between the two grades.
+
+# Reference 
+@article{chu2001,
+  author  = {Chu, Singfat},
+  title   = {Pricing the C's of Diamond Stones},
+  journal = {Journal of Statistics Education},
+  volume  = {9},
+  number  = {2},
+  year    = {2001}
+}
+
+@book{wickham2016,
+  author    = {Wickham, Hadley},
+  title     = {ggplot2: Elegant Graphics for Data Analysis},
+  edition   = {2},
+  publisher = {Springer},
+  year      = {2016}
+}
+
+@article{spearman1904,
+  author  = {Spearman, Charles},
+  title   = {The Proof and Measurement of Association between Two Things},
+  journal = {The American Journal of Psychology},
+  volume  = {15},
+  number  = {1},
+  pages   = {72--101},
+  year    = {1904}
+}
